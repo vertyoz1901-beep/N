@@ -86,6 +86,42 @@ h2{font-size:clamp(27px,3.6vw,40px);line-height:1.15}
 h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 .lead{font-size:clamp(17px,1.7vw,20px);color:var(--ink-dim);max-width:62ch;margin:20px 0 0}
 
+/* ─── полоска BRAVO VPN ─── */
+.promo{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  min-height:46px;padding:8px 20px;
+  background:var(--ink);color:var(--paper);text-decoration:none;
+  font-family:var(--mono);font-size:12px;letter-spacing:.04em;line-height:1.35;
+}
+.promo__badge{
+  position:relative;flex:none;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:31px;height:31px;border-radius:2px;background:var(--blue);color:#fff;
+}
+.promo__badge svg{width:18px;height:18px}
+.promo__badge::after{
+  content:"";position:absolute;inset:0;border-radius:2px;border:1px solid var(--blue);
+  animation:shield 2.6s ease-out infinite;
+}
+@keyframes shield{0%{transform:scale(1);opacity:.75}70%{transform:scale(1.55);opacity:0}100%{opacity:0}}
+.promo__txt b{font-weight:600;letter-spacing:.09em}
+.promo__txt em{
+  font-style:normal;color:#fff;background:var(--blue);
+  padding:2px 7px;border-radius:2px;letter-spacing:.12em;font-weight:600;
+}
+.promo__sep{margin:0 8px;opacity:.35}
+.promo__go{display:inline-flex;align-items:center;gap:6px;opacity:.6;white-space:nowrap}
+.promo__go i{font-style:normal;transition:transform .18s ease}
+
+/* ─── щит в шапке ─── */
+.shieldbtn{
+  display:inline-flex;align-items:center;justify-content:center;flex:none;
+  width:36px;height:36px;border:1px solid var(--line);border-radius:2px;
+  background:var(--paper);color:var(--blue);text-decoration:none;
+  transition:background .18s ease,border-color .18s ease;
+}
+.shieldbtn svg{width:19px;height:19px}
+
 /* ─── шапка ─── */
 .hdr{
   position:sticky;top:0;z-index:50;
@@ -118,7 +154,58 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 .btn--sm{padding:9px 16px;font-size:14px}
 .btn--ghost{background:transparent;color:var(--blue)}
 .btn--wide{width:100%}
-.btn__tg{width:16px;height:16px;flex:none}
+.btn__tg,.btn__ic{width:16px;height:16px;flex:none}
+
+/* пара «Telegram + MAX» */
+.btn-pair{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.btn-pair--center{justify-content:center}
+.btn-split{display:flex;align-items:stretch;gap:8px}
+.btn-split .btn--wide{flex:1;width:auto}
+.btn--icon{width:48px;padding:0;gap:0;flex:none}
+.btn--icon .btn__ic{width:19px;height:19px}
+.hdr__nav .btn-pair{gap:8px}
+
+/* ─── окно выбора мессенджера ─── */
+.pick{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.pick[hidden]{display:none}
+.pick__bg{
+  position:absolute;inset:0;background:rgba(18,22,26,.55);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  opacity:0;transition:opacity .2s ease;
+}
+.pick__box{
+  position:relative;width:100%;max-width:400px;
+  background:var(--paper);border:1px solid var(--ink);box-shadow:6px 6px 0 var(--blue);
+  padding:30px 28px 26px;
+  opacity:0;transform:translateY(12px);transition:opacity .22s ease,transform .22s ease;
+}
+.pick.is-on .pick__bg{opacity:1}
+.pick.is-on .pick__box{opacity:1;transform:none}
+.pick__box h3{font-family:var(--serif);font-size:23px;line-height:1.2;letter-spacing:-.015em}
+.pick__sub{
+  margin:9px 0 22px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-dim);
+}
+.pick__box .btn + .btn{margin-top:10px}
+.pick__note{margin:18px 0 0;font-size:12.5px;line-height:1.5;color:var(--ink-dim)}
+.pick__x{
+  position:absolute;top:6px;right:6px;width:42px;height:42px;
+  display:flex;align-items:center;justify-content:center;
+  background:none;border:0;cursor:pointer;font-size:23px;line-height:1;color:var(--ink-dim);
+}
+
+/* подсказка после копирования текста для MAX */
+.toast{
+  position:fixed;left:50%;bottom:26px;z-index:120;
+  max-width:min(92vw,430px);padding:12px 18px;text-align:center;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:12px;line-height:1.45;letter-spacing:.03em;
+  border-radius:2px;box-shadow:0 12px 26px rgba(18,22,26,.22);
+  opacity:0;visibility:hidden;transform:translate(-50%,14px);
+  transition:opacity .22s ease,transform .22s ease,visibility .22s;
+}
+.toast.is-on{opacity:1;visibility:visible;transform:translate(-50%,0)}
+@media (max-width:900px){.toast{bottom:88px}}
 :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 
 /* ─── герой ─── */
@@ -283,7 +370,7 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 /* ─── финал ─── */
 .final{text-align:center;padding:80px 0}
 .final .lead{margin-inline:auto}
-.final .btn{margin-top:30px}
+.final .btn-pair{margin-top:30px;justify-content:center}
 .final__note{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-dim);margin-top:16px}
 
 /* ─── подвал ─── */
@@ -298,6 +385,8 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .rv{opacity:1;transform:none;transition:none}
+  .promo__badge::after{animation:none}
+  .pick__bg,.pick__box{transition:none}
   .btn:hover{transform:none}
 }
 
@@ -306,6 +395,10 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 /* ховер — только там, где есть настоящая мышь */
 @media (hover:hover) and (pointer:fine){
   .btn:hover{background:var(--blue-deep);transform:translateY(-1px)}
+  .promo:hover .promo__go{opacity:1}
+  .promo:hover .promo__go i{transform:translateX(3px)}
+  .shieldbtn:hover{background:var(--blue-soft);border-color:var(--blue)}
+  .pick__x:hover{color:var(--ink)}
   .btn--ghost:hover{background:var(--blue-soft);color:var(--blue-deep)}
   .hdr__nav a:hover{color:var(--blue)}
   .cell:hover{background:var(--blue-soft)}
@@ -326,6 +419,15 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
   .hdr__in{padding:9px 18px;gap:12px}
   .hdr__nav{display:none}
   .logo{font-size:14.5px;min-height:44px}
+
+  .promo{gap:11px;padding:7px 16px;font-size:11px;justify-content:flex-start}
+  .promo__go{display:none}
+  .promo__badge{width:29px;height:29px}
+  .promo__badge svg{width:17px;height:17px}
+
+  .shieldbtn{width:44px;height:44px}
+  .hdr__in .shieldbtn{margin-left:auto}
+  .hdr__in .shieldbtn + .burger{margin-left:0}
 
   .burger{
     display:flex;align-items:center;justify-content:center;flex:none;
@@ -357,6 +459,7 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
     text-decoration:none;font-size:16px;border-bottom:1px solid var(--line);
   }
   .mnav .btn{justify-content:center;border-bottom:0;margin-top:14px;min-height:52px}
+  .mnav .btn + .btn{margin-top:10px}
 
   /* липкая панель заказа */
   .mbar{
@@ -372,6 +475,7 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
   .mbar__txt{flex:1;min-width:0;font-size:11.5px;line-height:1.25;color:var(--ink-dim)}
   .mbar__txt b{display:block;font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink)}
   .mbar .btn{flex:none;min-height:46px;padding:12px 20px}
+  .mbar .btn--icon{width:46px;padding:0}
 }
 
 /* ─── телефон ─── */
@@ -441,7 +545,15 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
   .qa__a{font-size:14.5px;padding-bottom:18px}
 
   .final{padding:54px 0 58px}
-  .final .btn{margin-top:24px;width:100%}
+  .final .btn-pair{margin-top:24px;flex-direction:column;align-items:stretch}
+  .final .btn-pair .btn{width:100%}
+
+  .pick{align-items:flex-end;padding:0}
+  .pick__box{
+    max-width:none;border-left:0;border-right:0;border-bottom:0;box-shadow:none;
+    padding:26px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(26px);
+  }
+  .pick__box h3{font-size:21px}
 
   .ftr{padding:26px 0 34px}
   .ftr__in{flex-direction:column;gap:8px}
@@ -452,6 +564,8 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 /* ─── узкие телефоны ─── */
 @media (max-width:370px){
   .wrap{padding:0 15px}
+  .promo{font-size:10px;gap:9px;padding:7px 13px}
+  .promo__sep{margin:0 5px}
   h1{font-size:30px}
   .cell{padding:7px 5px 8px;min-height:72px}
   .cell__n{font-size:8.5px}
@@ -460,6 +574,7 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
   .fact__l{font-size:11px}
   .mbar__txt{font-size:11px}
   .mbar .btn{padding:12px 16px}
+  .mbar .btn--icon{width:44px;padding:0}
 }
 
 /* ─── горизонтальная ориентация телефона ─── */
@@ -472,6 +587,13 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 </head>
 <body>
 
+<!-- ═══ BRAVO VPN ═══ -->
+<a class="promo" href="https://bravointer.net/" target="_blank" rel="noopener">
+  <span class="promo__badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 4.6 5.9v5.4c0 4.3 3 8.4 7.4 9.9 4.4-1.5 7.4-5.6 7.4-9.9V5.9L12 2.8Z"/><path d="m8.9 11.9 2.1 2.2 4.1-4.4"/></svg></span>
+  <span class="promo__txt"><b>BRAVO VPN</b><span class="promo__sep">·</span>по промокоду <em>numerix</em> — 30 дней бесплатно.</span>
+  <span class="promo__go" style="color: white;"><b>Перейти на сайт</b></span>
+</a>
+
 <header class="hdr">
   <div class="hdr__in">
     <a class="logo" href="#top">
@@ -482,11 +604,15 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
       <a href="#inside">Что внутри</a>
       <a href="#how">Как считается</a>
       <a href="#tiers">Тарифы</a>
-      <a class="btn js-tg" data-msg="base" href="#" style="color: white;">
-      <svg class="btn__tg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.8 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.7 13.1 2 11.6c-1-.3-1-1 .2-1.5l18.4-7.1c.8-.3 1.5.2 1.3 1.3z"/></svg>
-      Написать в Telegram
-    </a>
+      <span class="btn-pair">
+        <a class="btn btn--sm js-tg" data-msg="base" href="#" style="color:#fff"><svg class="btn__tg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.8 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.7 13.1 2 11.6c-1-.3-1-1 .2-1.5l18.4-7.1c.8-.3 1.5.2 1.3 1.3z"/></svg> Telegram</a>
+        <a class="btn btn--sm btn--ghost js-max" data-msg="base" href="#" style="color:var(--blue)"><svg class="btn__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c4.7 0 8.5 3.2 8.5 7.1s-3.8 7.1-8.5 7.1c-.8 0-1.6-.1-2.3-.3l-4.2 2.1 1-3.4c-1.8-1.3-3-3.2-3-5.5 0-3.9 3.8-7.1 8.5-7.1Z"/><path d="M8.7 13.9V9.5l3.3 3.3 3.3-3.3v4.4"/></svg> MAX</a>
+      </span>
     </nav>
+
+    <a class="shieldbtn" href="https://bravointer.net/" target="_blank" rel="noopener"
+       title="BRAVO VPN — промокод NUMERIX, 30 дней бесплатно"
+       aria-label="BRAVO VPN — по промокоду NUMERIX 30 дней бесплатно"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 4.6 5.9v5.4c0 4.3 3 8.4 7.4 9.9 4.4-1.5 7.4-5.6 7.4-9.9V5.9L12 2.8Z"/><path d="m8.9 11.9 2.1 2.2 4.1-4.4"/></svg></a>
 
     <button class="burger" id="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mnav"><span></span></button>
 
@@ -498,6 +624,10 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
       <a class="btn js-tg" data-msg="base" href="#">
         <svg class="btn__tg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.8 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.7 13.1 2 11.6c-1-.3-1-1 .2-1.5l18.4-7.1c.8-.3 1.5.2 1.3 1.3z"/></svg>
         Написать в Telegram
+      </a>
+      <a class="btn btn--ghost js-max" data-msg="base" href="#">
+        <svg class="btn__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c4.7 0 8.5 3.2 8.5 7.1s-3.8 7.1-8.5 7.1c-.8 0-1.6-.1-2.3-.3l-4.2 2.1 1-3.4c-1.8-1.3-3-3.2-3-5.5 0-3.9 3.8-7.1 8.5-7.1Z"/><path d="M8.7 13.9V9.5l3.3 3.3 3.3-3.3v4.4"/></svg>
+        Написать в MAX
       </a>
     </nav>
   </div>
@@ -589,7 +719,7 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
             <b>Посчитано 2 параметра из 12.</b> Отдельные ячейки — только первый слой. Главное в квадрате — девять линий (три горизонтали, три вертикали, две диагонали) и то, как ячейки усиливают или гасят друг друга. Это, вместе с числом души, числом личности, кармическими задачами и персональным годом, считается вручную в полном разборе.
           </div>
 
-          <a class="btn btn--wide js-tg" data-msg="full" href="#" style="margin-top:16px">Заказать полный разбор</a>
+          <a class="btn btn--wide js-pick" data-msg="full" href="#" style="margin-top:16px">Заказать полный разбор</a>
         </div>
       </div>
     </div>
@@ -640,7 +770,7 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
       <div class="step rv">
         <div class="step__n num">ШАГ 03</div>
         <h3>Забираете PDF</h3>
-        <p>Файл приходит в Telegram. Дальше можно задать вопросы по тексту — на них отвечаем в любом тарифе, а не только в VIP.</p>
+        <p>Файл приходит в тот мессенджер, где вы написали, — Telegram или MAX. Дальше можно задать вопросы по тексту — на них отвечаем в любом тарифе, а не только в VIP.</p>
       </div>
     </div>
   </div>
@@ -656,7 +786,7 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
       <div class="rv">
         <p class="lead" style="margin-top:0">Ниже — настоящая страница из разбора, только имя и цифры заменены. Формат один и тот же во всех тарифах: сначала расчёт, потом что он означает, потом что с этим делать на практике.</p>
         <p style="font-size:15px;color:var(--ink-dim);line-height:1.6">Мы специально показываем фрагмент до оплаты. Если формулировки вам не подходят по тону — лучше понять это сейчас, чем после перевода.</p>
-        <a class="btn btn--ghost js-tg" data-msg="sample" href="#" style="margin-top:8px">Запросить полный пример</a>
+        <a class="btn btn--ghost js-pick" data-msg="sample" href="#" style="margin-top:8px">Запросить полный пример</a>
       </div>
 
       <div class="page rv">
@@ -688,11 +818,11 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
         <ul>
           <li>5 базовых чисел: путь, выражение, душа, личность, день рождения</li>
           <li>Расшифровка каждого числа с примерами</li>
-          <li>Ответы на вопросы по тексту в Telegram</li>
+          <li>Ответы на вопросы по тексту в Telegram или MAX</li>
           <li class="off">Квадрат Пифагора и девять линий</li>
           <li class="off">Прогноз на 12 месяцев</li>
         </ul>
-        <a class="btn btn--ghost btn--wide js-tg" data-msg="base" href="#">Выбрать «Базу»</a>
+        <a class="btn btn--ghost btn--wide js-pick" data-msg="base" href="#">Выбрать «Базу»</a>
       </div>
 
       <div class="tier tier--hit rv">
@@ -707,20 +837,20 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
           <li>Персональный год с разбивкой по месяцам</li>
           <li>Практические выводы в конце каждой главы</li>
         </ul>
-        <a class="btn btn--wide js-tg" data-msg="full" href="#">Выбрать «Полный»</a>
+        <a class="btn btn--wide js-pick" data-msg="full" href="#">Выбрать «Полный»</a>
       </div>
 
       <div class="tier rv">
         <div class="tier__name">VIP</div>
         <div class="tier__price num" id="p3">9 900 ₽</div>
-        <p class="tier__meta">PDF ~40 страниц · до 24-х часов</p>
+        <p class="tier__meta">PDF ~110 страниц · до 24-х часов</p>
         <ul>
           <li>Всё из тарифа «Полный разбор»</li>
-          <li>Совместимость с партнёром — отдельный расчёт по его данным</li>
-          <li>30 дней вопросов в Telegram без ограничений</li>
+          <li>Полный разбор вас и партнера, а так же совместимость</li>
+          <li>30 дней вопросов в Telegram или MAX без ограничений</li>
           <li>Приоритетная очередь</li>
         </ul>
-        <a class="btn btn--ghost btn--wide js-tg" data-msg="vip" href="#">Выбрать «VIP»</a>
+        <a class="btn btn--ghost btn--wide js-pick" data-msg="vip" href="#">Выбрать «VIP»</a>
       </div>
     </div>
   </div>
@@ -747,7 +877,7 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
       </div>
       <div class="qa">
         <button class="qa__q" type="button">Сколько ждать?<span class="qa__ic num">+</span></button>
-        <div class="qa__a">База — 2 рабочих дня, полный разбор и VIP — 3.</div>
+        <div class="qa__a">База — 2 рабочих дня, полный разбор - 3 рабочих дня, VIP — до 24-х часов.</div>
       </div>
       <div class="qa">
         <button class="qa__q" type="button">Можно заказать разбор на другого человека?<span class="qa__ic num">+</span></button>
@@ -755,7 +885,7 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
       </div>
       <div class="qa">
         <button class="qa__q" type="button">Как оплатить?<span class="qa__ic num">+</span></button>
-        <div class="qa__a">Обсуждаем в Telegram: карта, СБП или криптовалюта. Оплата вперёд, чек присылаем.</div>
+        <div class="qa__a">Обсуждаем в Telegram или MAX: карта, СБП или криптовалюта. Оплата вперёд, чек присылаем.</div>
       </div>
       <div class="qa">
         <button class="qa__q" type="button">Вернёте деньги, если не подойдёт?<span class="qa__ic num">+</span></button>
@@ -770,11 +900,17 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
   <div class="wrap final">
     <p class="eyebrow rv" style="justify-content:center">Заказ</p>
     <h2 class="rv">Начните с одного сообщения</h2>
-    <p class="lead rv">Напишите в Telegram — уточним тариф, вы пришлёте дату и ФИО. Дальше от вас ничего не требуется.</p>
-    <a class="btn js-tg rv" data-msg="base" href="#">
-      <svg class="btn__tg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.8 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.7 13.1 2 11.6c-1-.3-1-1 .2-1.5l18.4-7.1c.8-.3 1.5.2 1.3 1.3z"/></svg>
-      Написать в Telegram
-    </a>
+    <p class="lead rv">Напишите в Telegram или MAX — уточним тариф, вы пришлёте дату и ФИО. Дальше от вас ничего не требуется.</p>
+    <div class="btn-pair btn-pair--center rv">
+      <a class="btn js-tg" data-msg="base" href="#">
+        <svg class="btn__tg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.8 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.7 13.1 2 11.6c-1-.3-1-1 .2-1.5l18.4-7.1c.8-.3 1.5.2 1.3 1.3z"/></svg>
+        Написать в Telegram
+      </a>
+      <a class="btn btn--ghost js-max" data-msg="base" href="#">
+        <svg class="btn__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c4.7 0 8.5 3.2 8.5 7.1s-3.8 7.1-8.5 7.1c-.8 0-1.6-.1-2.3-.3l-4.2 2.1 1-3.4c-1.8-1.3-3-3.2-3-5.5 0-3.9 3.8-7.1 8.5-7.1Z"/><path d="M8.7 13.9V9.5l3.3 3.3 3.3-3.3v4.4"/></svg>
+        Написать в MAX
+      </a>
+    </div>
     <p class="final__note">Отвечаем с 10:00 до 22:00 по Москве</p>
   </div>
 </section>
@@ -784,7 +920,7 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 <div class="mbar" id="mbar" aria-hidden="true">
   <div class="mbar__in">
     <div class="mbar__txt"><b id="mbar-price">3 900 ₽</b>полный разбор, 30 страниц</div>
-    <a class="btn js-tg" data-msg="full" href="#">
+    <a class="btn js-pick" data-msg="full" href="#">
       <svg class="btn__tg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.8 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.7 13.1 2 11.6c-1-.3-1-1 .2-1.5l18.4-7.1c.8-.3 1.5.2 1.3 1.3z"/></svg>
       Заказать
     </a>
@@ -795,22 +931,48 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
   <div class="wrap">
     <div class="ftr__in">
       <div>© <span class="num" id="year">2026</span> Числовой профиль</div>
-      <div><a class="js-tg" data-msg="base" href="#">Telegram</a> · <a href="#tiers">Тарифы</a></div>
+      <div><a class="js-tg" data-msg="base" href="#">Telegram</a> · <a class="js-max" data-msg="base" href="#">MAX</a> · <a href="#tiers">Тарифы</a> · <a href="https://bravointer.net/app/" target="_blank" rel="noopener">BRAVO VPN</a></div>
     </div>
     <p class="disc">Нумерология не является наукой и не имеет доказанной прогностической силы. Разбор — инструмент для самоанализа. Он не заменяет консультацию врача, психолога, юриста или финансового советника и не должен использоваться как основание для медицинских, юридических или инвестиционных решений. Услуга оказывается лицам старше 18 лет.</p>
   </div>
 </footer>
 
+<!-- выбор мессенджера -->
+<div class="pick" id="pick" hidden>
+  <div class="pick__bg" data-pick-close></div>
+  <div class="pick__box" role="dialog" aria-modal="true" aria-labelledby="pick-h">
+    <button class="pick__x" type="button" data-pick-close aria-label="Закрыть">&times;</button>
+    <h3 id="pick-h">Где вам удобнее написать?</h3>
+    <p class="pick__sub" id="pick-sub"></p>
+    <a class="btn btn--wide" id="pick-tg" href="#"><svg class="btn__tg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.8 19c-.2 1-.9 1.3-1.7.8l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.7 13.1 2 11.6c-1-.3-1-1 .2-1.5l18.4-7.1c.8-.3 1.5.2 1.3 1.3z"/></svg> Написать в Telegram</a>
+    <a class="btn btn--ghost btn--wide" id="pick-max" href="#"><svg class="btn__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c4.7 0 8.5 3.2 8.5 7.1s-3.8 7.1-8.5 7.1c-.8 0-1.6-.1-2.3-.3l-4.2 2.1 1-3.4c-1.8-1.3-3-3.2-3-5.5 0-3.9 3.8-7.1 8.5-7.1Z"/><path d="M8.7 13.9V9.5l3.3 3.3 3.3-3.3v4.4"/></svg> Написать в MAX</a>
+    <p class="pick__note">Отвечаем с 10:00 до 22:00 по Москве.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
 /* ═══ CONFIG — правьте здесь ═══════════════════════════════ */
 const CONFIG = {
-  tg: 'Marinabrz7',                 // юзернейм менеджера, без @
+  tg: 'Marinabrz7',                 // Telegram: юзернейм менеджера, без @
+  max: 'https://max.ru/u/f9LHodD0cOJnv3pBHG4qDzKvrNX-rg3i8PXdMUrJcoxpIKwz_JPBQtJEBoA', // MAX: полная ссылка на профиль из приложения
+                                    // (Настройки → QR-код → Поделиться).
+                                    // Вид: https://max.ru/username или https://max.ru/u/...
+                                    // Пусто '' — кнопки MAX не показываются.
   prices: { base: '1 490 ₽', full: '3 900 ₽', vip: '9 900 ₽' },
   msg: {
     base:   'Здравствуйте! Хочу разбор по тарифу «База».',
     full:   'Здравствуйте! Хочу «Полный разбор».',
     vip:    'Здравствуйте! Интересует тариф VIP.',
     sample: 'Здравствуйте! Пришлите, пожалуйста, полный пример разбора.'
+  },
+  // подпись в окне выбора мессенджера
+  names: {
+    base:   'Тариф «База»',
+    full:   'Тариф «Полный разбор»',
+    vip:    'Тариф VIP',
+    sample: 'Пример разбора'
   }
 };
 /* ══════════════════════════════════════════════════════════ */
@@ -820,11 +982,94 @@ document.getElementById('p2').textContent = CONFIG.prices.full;
 document.getElementById('p3').textContent = CONFIG.prices.vip;
 document.getElementById('year').textContent = new Date().getFullYear();
 
-document.querySelectorAll('.js-tg').forEach(function(a){
-  var key = a.dataset.msg || 'base';
-  a.href = 'https://t.me/' + CONFIG.tg + '?text=' + encodeURIComponent(CONFIG.msg[key] || CONFIG.msg.base);
+/* ─── подсказка внизу экрана ─── */
+var toastEl = document.getElementById('toast');
+var toastTimer;
+function showToast(text){
+  if (!toastEl) return;
+  toastEl.textContent = text;
+  toastEl.classList.add('is-on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove('is-on'); }, 3400);
+}
+
+/* ─── ссылки на мессенджеры ───
+   Telegram подставляет текст сообщения через ?text=.
+   В MAX ссылка на профиль так не умеет, поэтому текст копируем в буфер. */
+function msgFor(key){ return CONFIG.msg[key] || CONFIG.msg.base; }
+function tgLink(text){
+  return 'https://t.me/' + CONFIG.tg + '?text=' + encodeURIComponent(text);
+}
+function copyForMax(text){
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){
+      showToast('Текст сообщения скопирован — вставьте его в чат MAX');
+    }).catch(function(){});
+  }
+}
+
+/* кнопки с явным названием канала: шапка, меню, финал, подвал */
+document.querySelectorAll('.js-tg, .js-max').forEach(function(a){
+  var text = msgFor(a.dataset.msg || 'base');
+
+  if (a.classList.contains('js-max')) {
+    if (!CONFIG.max) { a.remove(); return; }   // ссылка не заполнена — кнопку не показываем
+    a.href = CONFIG.max;
+    a.addEventListener('click', function(){ copyForMax(text); });
+  } else {
+    a.href = tgLink(text);
+  }
+
   a.target = '_blank';
   a.rel = 'noopener';
+});
+
+/* ─── кнопки заказа: спрашиваем канал ─── */
+var pickEl   = document.getElementById('pick');
+var pickTg   = document.getElementById('pick-tg');
+var pickMax  = document.getElementById('pick-max');
+var pickSub  = document.getElementById('pick-sub');
+var pickPrev = null;
+
+[pickTg, pickMax].forEach(function(a){ a.target = '_blank'; a.rel = 'noopener'; });
+
+function openPick(key){
+  var text = msgFor(key);
+  pickSub.textContent = CONFIG.names[key] || '';
+  pickTg.href  = tgLink(text);
+  pickMax.href = CONFIG.max;
+  pickMax.onclick = function(){ copyForMax(text); };
+
+  pickPrev = document.activeElement;
+  pickEl.hidden = false;
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(function(){ pickEl.classList.add('is-on'); });
+  setTimeout(function(){ pickTg.focus(); }, 60);
+}
+
+function closePick(){
+  if (pickEl.hidden) return;
+  pickEl.classList.remove('is-on');
+  document.body.style.overflow = '';
+  setTimeout(function(){ pickEl.hidden = true; }, 220);
+  if (pickPrev && pickPrev.focus) pickPrev.focus();
+}
+
+pickEl.addEventListener('click', function(e){
+  if (e.target.closest('[data-pick-close], #pick-tg, #pick-max')) closePick();
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closePick();
+});
+
+document.querySelectorAll('.js-pick').forEach(function(b){
+  b.addEventListener('click', function(e){
+    e.preventDefault();
+    var key = b.dataset.msg || 'base';
+    // MAX не настроен — ведём сразу в Telegram, без лишнего шага
+    if (!CONFIG.max) { window.open(tgLink(msgFor(key)), '_blank', 'noopener'); return; }
+    openPick(key);
+  });
 });
 
 /* ─── таблица соответствия русских букв цифрам ─── */
