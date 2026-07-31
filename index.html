@@ -386,6 +386,98 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 .step h3{margin-bottom:8px}
 .step p{margin:0;font-size:15px;line-height:1.55;opacity:.78}
 
+/* ═══════════════════════════════════════════════════════════
+   СЕКЦИЯ «ТРИ ШАГА» — ЗВЁЗДНОЕ НЕБО
+   Всё заскоплено на #how, разметку менять не нужно.
+   ═══════════════════════════════════════════════════════════ */
+
+#how{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(140% 100% at 50% -25%, rgba(30,63,168,.34) 0%, rgba(30,63,168,0) 62%),
+    radial-gradient(90% 70% at 88% 108%,   rgba(30,63,168,.16) 0%, rgba(30,63,168,0) 70%),
+    linear-gradient(180deg,#080B12 0%,#0E1219 48%,#0A0D14 100%);
+}
+
+/* два слоя звёзд поверх фона, но под текстом */
+#how::before,
+#how::after{
+  content:"";
+  position:absolute;
+  inset:-12%;
+  z-index:-1;
+  pointer-events:none;
+}
+
+/* слой 1 — мелкая звёздная пыль, очень медленно уплывает вверх */
+#how::before{
+  background-image:
+    radial-gradient(1px 1px at 14% 11%, rgba(255,255,255,.50), transparent 60%),
+    radial-gradient(1px 1px at 61% 23%, rgba(255,255,255,.38), transparent 60%),
+    radial-gradient(1px 1px at 37% 52%, rgba(255,255,255,.46), transparent 60%),
+    radial-gradient(1px 1px at 86% 66%, rgba(255,255,255,.34), transparent 60%),
+    radial-gradient(1px 1px at  7% 78%, rgba(255,255,255,.42), transparent 60%),
+    radial-gradient(1px 1px at 52% 88%, rgba(255,255,255,.30), transparent 60%),
+    radial-gradient(1px 1px at 74% 41%, rgba(143,166,232,.44), transparent 60%),
+    radial-gradient(1px 1px at 26% 33%, rgba(143,166,232,.38), transparent 60%);
+  background-size:280px 240px;
+  animation:sky-drift 140s linear infinite, sky-dim 9s ease-in-out infinite;
+}
+
+/* слой 2 — крупные звёзды, мерцают в другом ритме */
+#how::after{
+  background-image:
+    radial-gradient(1.9px 1.9px at 22% 17%, rgba(255,255,255,.95), transparent 62%),
+    radial-gradient(1.6px 1.6px at 79% 31%, rgba(203,216,255,.85), transparent 62%),
+    radial-gradient(2.1px 2.1px at 47% 72%, rgba(255,255,255,.80), transparent 62%),
+    radial-gradient(1.5px 1.5px at 12% 61%, rgba(203,216,255,.70), transparent 62%),
+    radial-gradient(1.7px 1.7px at 91% 84%, rgba(255,255,255,.72), transparent 62%);
+  background-size:520px 430px;
+  animation:sky-twinkle 6.5s ease-in-out infinite;
+}
+
+@keyframes sky-drift  {from{background-position:0 0}    to{background-position:0 -240px}}
+@keyframes sky-dim    {0%,100%{opacity:.62} 50%{opacity:.95}}
+@keyframes sky-twinkle{0%,100%{opacity:.55} 45%{opacity:1}}
+
+/* три шага = созвездие из трёх звёзд на одной линии */
+#how .step{
+  position:relative;
+  border-top:1px solid rgba(143,166,232,.30);
+  padding-top:26px;
+}
+#how .step::before{                 /* сама звезда на линии */
+  content:"";
+  position:absolute;
+  top:-8px; left:0;
+  width:15px; height:15px;
+  background:#DCE5FF;
+  clip-path:polygon(50% 0%,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0% 50%,40% 40%);
+  filter:drop-shadow(0 0 7px rgba(143,166,232,.85));
+}
+#how .step::after{                  /* перемычка через gap: линия не рвётся */
+  content:"";
+  position:absolute;
+  top:-1px; right:-34px;
+  width:34px; height:1px;
+  background:rgba(143,166,232,.30);
+}
+#how .step:last-child::after{content:none}
+
+#how .step__n{color:#9FB4EE;opacity:.9}
+#how .step h3{color:#F4F5F8}
+#how .step p{opacity:.72}
+
+@media(max-width:800px){
+  #how .step::after{content:none}   /* в одну колонку перемычка не нужна */
+}
+
+@media(prefers-reduced-motion:reduce){
+  #how::before,#how::after{animation:none;opacity:.85}
+}
+
 /* ─── фрагмент ─── */
 .samp{display:grid;grid-template-columns:1fr 1.15fr;gap:52px;align-items:center;margin-top:40px}
 @media(max-width:900px){.samp{grid-template-columns:1fr;gap:32px}}
