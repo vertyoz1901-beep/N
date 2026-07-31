@@ -304,6 +304,68 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 }
 .locked b{font-weight:600}
 
+
+/* ═══════════════════════════════════════════════════════════
+   АНИМАЦИЯ РАСЧЁТА — единственное, что добавлено к вёрстке.
+   Все цвета берутся из существующих переменных, ничего нового.
+   ═══════════════════════════════════════════════════════════ */
+.chain{display:flex;flex-direction:column;gap:9px}
+.ln{display:flex;align-items:center;flex-wrap:wrap;gap:5px;line-height:1}
+.ln .dg,.ln .op,.ln .eq,.ln .ar,.ln .lbl,.ln .tot{opacity:0;transform:translateY(-9px)}
+.ln.is-in .dg,.ln.is-in .op,.ln.is-in .eq,.ln.is-in .ar,.ln.is-in .lbl{
+  opacity:1;transform:none;
+  transition:opacity .16s linear var(--d),transform .3s cubic-bezier(.18,.9,.24,1) var(--d);
+}
+/* сумма приземляется тяжелее остальных — с перелётом */
+.ln.is-in .tot{
+  opacity:1;transform:none;
+  transition:opacity .2s linear var(--d),transform .44s cubic-bezier(.16,1.32,.4,1) var(--d);
+}
+.dg{
+  width:29px;height:35px;flex:none;display:grid;place-items:center;
+  background:#fff;border:1px solid var(--line);border-radius:2px;color:var(--ink);
+}
+.op{width:11px;flex:none;text-align:center;color:var(--ink-dim)}
+.eq{margin:0 6px;flex:none;color:var(--ink-dim)}
+.ar{flex:none;color:var(--ink-dim);margin-right:3px}
+.tot{
+  height:35px;flex:none;display:inline-grid;place-items:center;padding:0 12px;
+  background:var(--blue-soft);border:1px solid rgba(30,63,168,.28);border-radius:2px;
+  color:var(--blue);font-weight:500;
+  transform:translateY(-14px) scale(1.15);
+}
+.ln--fin{gap:7px}
+.ln--fin .lbl{color:var(--ink-dim)}
+.ln--fin .tot{height:auto;padding:0;background:none;border:0;color:var(--red);font-size:19px;font-weight:600}
+
+/* итоговое число: короткая настройка и фиксация */
+.res__big.is-idle{color:rgba(255,255,255,.3)}
+.res__big.is-flick{color:rgba(255,255,255,.5)}
+.res__big.is-lock{animation:lock .44s cubic-bezier(.16,1.32,.4,1)}
+@keyframes lock{from{transform:scale(1.12)}to{transform:none}}
+
+/* квадрат Пифагора заполняется ячейка за ячейкой */
+.sq__grid .cell{opacity:0;transform:translateY(7px)}
+.sq__grid.is-in .cell{
+  opacity:1;transform:none;
+  transition:opacity .22s ease var(--d),transform .34s cubic-bezier(.2,.9,.25,1) var(--d),background .15s ease;
+}
+
+/* на телефоне строка сложения должна умещаться в одну линию */
+@media (max-width:640px){
+  .ln{gap:2px}
+  .dg{width:21px;height:29px}
+  .op{width:8px}
+  .eq{margin:0 3px}
+  .tot{height:29px;padding:0 7px}
+  .ln--fin .tot{height:auto;font-size:17px}
+}
+@media (max-width:370px){
+  .dg{width:18px;height:27px}
+  .op{width:7px}
+  .tot{height:27px;padding:0 6px}
+}
+
 /* ─── что внутри ─── */
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}
 @media(max-width:900px){.grid3{grid-template-columns:repeat(2,1fr)}}
@@ -385,6 +447,9 @@ h3{font-size:19px;line-height:1.3;font-family:var(--sans);font-weight:600}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .rv{opacity:1;transform:none;transition:none}
+  .ln .dg,.ln .op,.ln .eq,.ln .ar,.ln .lbl,.ln .tot{opacity:1;transform:none;transition:none}
+  .sq__grid .cell{opacity:1;transform:none;transition:none}
+  .res__big.is-lock{animation:none}
   .promo__badge::after{animation:none}
   .pick__bg,.pick__box{transition:none}
   .btn:hover{transform:none}
@@ -1255,6 +1320,65 @@ function expressionNumber(fio){
   return reduceNum(total);
 }
 
+/* ═══ АНИМАЦИЯ РАСЧЁТА ═══════════════════════════════════════
+   Один запуск = одна очередь таймеров; повторное нажатие её сбрасывает.
+   При системной настройке «уменьшить движение» результат появляется сразу. */
+var REDUCED  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var TIMERS   = [];
+var STEP     = 45;   // пауза между цифрами внутри строки
+var CELLSTEP = 50;   // пауза между ячейками квадрата
+
+function later(fn, ms){ TIMERS.push(setTimeout(fn, REDUCED ? 0 : ms)); }
+function clearSeq(){ TIMERS.forEach(clearTimeout); TIMERS = []; }
+
+function buildRow(digits, total, arrow){
+  var row = document.createElement('div');
+  row.className = 'ln';
+  var html = '';
+  if (arrow) html += '<span class="ar" style="--d:0ms">\u2192</span>';
+  digits.forEach(function(dg, i){
+    if (i) html += '<span class="op" style="--d:' + (i*STEP) + 'ms">+</span>';
+    html += '<span class="dg" style="--d:' + (i*STEP) + 'ms">' + dg + '</span>';
+  });
+  var n = digits.length;
+  html += '<span class="eq" style="--d:' + (n*STEP) + 'ms">=</span>';
+  html += '<span class="tot" style="--d:' + Math.round((n+0.6)*STEP) + 'ms">' + total + '</span>';
+  row.innerHTML = html;
+  return row;
+}
+
+function buildFinal(path){
+  var row = document.createElement('div');
+  row.className = 'ln ln--fin';
+  row.innerHTML =
+    '<span class="ar" style="--d:0ms">\u2192</span>' +
+    '<span class="lbl" style="--d:45ms">\u0447\u0438\u0441\u043b\u043e \u0436\u0438\u0437\u043d\u0435\u043d\u043d\u043e\u0433\u043e \u043f\u0443\u0442\u0438</span>' +
+    '<span class="tot" style="--d:130ms">' + path + '</span>';
+  return row;
+}
+
+/* число не подставляется, а «настраивается»: несколько чужих цифр и фиксация */
+function flickTo(el, finalText, done){
+  el.classList.remove('is-idle');
+  if (REDUCED){ el.textContent = finalText; done(); return; }
+  var pool = ['3','8','1','5','9','2','6','4'], i = 0;
+  el.classList.add('is-flick');
+  (function tick(){
+    if (i < 7){
+      el.textContent = pool[(i * 3) % pool.length];
+      i++;
+      later(tick, 45);
+    } else {
+      el.classList.remove('is-flick');
+      el.textContent = finalText;
+      el.classList.remove('is-lock');
+      void el.offsetWidth;
+      el.classList.add('is-lock');
+      done();
+    }
+  })();
+}
+
 function calculate(){
   errEl.textContent = '';
   var d = parseDate(dateEl.value);
@@ -1263,62 +1387,95 @@ function calculate(){
     return;
   }
 
-  var digits = (d.dd + d.mm + d.yyyy).split('').map(Number);
-  var total = sum(digits);
-  var path = reduceNum(total);
+  clearSeq();
 
-  /* цепочка расчёта */
-  var line1 = digits.join(' + ') + ' = ' + total;
-  var chain = '<div>' + line1 + '</div>';
+  /* ── математика ровно та же, что и была ── */
+  var digits = (d.dd + d.mm + d.yyyy).split('').map(Number);
+  var total  = sum(digits);
+  var stages = [{ d:digits, s:total }];
   var cur = total;
   while (cur > 9 && cur !== 11 && cur !== 22 && cur !== 33){
     var next = sum(digitsOf(cur));
-    chain += '<div><span class="chain__op">→</span> ' + digitsOf(cur).join(' + ') + ' = ' + next + '</div>';
+    stages.push({ d:digitsOf(cur), s:next });
     cur = next;
   }
-  chain += '<div><span class="chain__op">→</span> число жизненного пути <span class="chain__res">' + path + '</span></div>';
-  document.getElementById('chain').innerHTML = chain;
-
-  document.getElementById('res-n').textContent = path;
-  document.getElementById('res-t').textContent = MEANING[path] || '';
-
-  /* число выражения по ФИО */
+  var path = cur;
   var expr = expressionNumber(nameEl.value || '');
-  document.getElementById('res-e').textContent = expr ? expr : 'введите ФИО';
-
-  /* квадрат Пифагора */
-  var sq = pythagoras(d.dd, d.mm, d.yyyy);
+  var sq   = pythagoras(d.dd, d.mm, d.yyyy);
   LAST_CELLS = sq.cells;
+
+  var chainEl = document.getElementById('chain');
+  var gridEl  = document.getElementById('sq');
+  var bigEl   = document.getElementById('res-n');
+
+  /* ── сброс перед новым расчётом ── */
+  outEl.classList.add('is-on');
+  chainEl.innerHTML = '';
+  gridEl.innerHTML = '';
+  gridEl.classList.remove('is-in');
+  document.getElementById('sq-panel').style.display = 'none';
+  document.getElementById('sq-empty').textContent = '';
+  document.getElementById('res-t').textContent = '';
+  document.getElementById('res-e').textContent = '—';
+  bigEl.textContent = '—';
+  bigEl.classList.add('is-idle');
+
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  later(function(){ outEl.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block:'nearest' }); }, 40);
+
+  /* ── цифры влетают по одной и складываются ── */
+  var t = 140;
+  stages.forEach(function(st, i){
+    var row = buildRow(st.d, st.s, i > 0);
+    chainEl.appendChild(row);
+    later(function(){ row.classList.add('is-in'); }, t);
+    t += 110 + st.d.length * STEP;
+  });
+
+  var fin = buildFinal(path);
+  chainEl.appendChild(fin);
+  later(function(){ fin.classList.add('is-in'); }, t);
+
+  /* ── итоговое число ── */
+  later(function(){
+    flickTo(bigEl, String(path), function(){
+      document.getElementById('res-t').textContent = MEANING[path] || '';
+      document.getElementById('res-e').textContent = expr ? expr : 'введите ФИО';
+    });
+  }, t + 140);
+
+  var afterBig = t + 140 + 7*45 + 60;
+
+  /* ── квадрат Пифагора заполняется ячейка за ячейкой ── */
   var order = [1,4,7,2,5,8,3,6,9];
   var html = '';
-  order.forEach(function(k){
+  order.forEach(function(k, i){
     var val = sq.cells[k];
-    html += '<button type="button" class="cell' + (val ? '' : ' cell--empty') + '" data-k="' + k + '" aria-pressed="false">' +
+    html += '<button type="button" class="cell' + (val ? '' : ' cell--empty') + '" data-k="' + k + '" aria-pressed="false" style="--d:' + (i*CELLSTEP) + 'ms">' +
               '<span class="cell__k">' + k + '</span>' +
               '<span class="cell__n">' + CELLS[k].n + '</span>' +
               '<span class="cell__v">' + (val || '—') + '</span>' +
             '</button>';
   });
-  document.getElementById('sq').innerHTML = html;
+  gridEl.innerHTML = html;
+  later(function(){ gridEl.classList.add('is-in'); }, afterBig);
 
-  /* пустые ячейки */
+  /* ── пустые ячейки ── */
   var empty = [];
   for (var i = 1; i <= 9; i++) if (!sq.cells[i]) empty.push(i);
-  document.getElementById('sq-empty').innerHTML = empty.length
-    ? 'Пустые ячейки: <b>' + empty.join(', ') + '</b> — качества, которые придётся нарабатывать сознательно. В полном разборе это отдельная глава «кармические задачи».'
-    : 'Пустых ячеек нет: все девять качеств так или иначе выражены — редкая и сильная комбинация.';
+  later(function(){
+    document.getElementById('sq-empty').innerHTML = empty.length
+      ? 'Пустые ячейки: <b>' + empty.join(', ') + '</b> — качества, которые придётся нарабатывать сознательно. В полном разборе это отдельная глава «кармические задачи».'
+      : 'Пустых ячеек нет: все девять качеств так или иначе выражены — редкая и сильная комбинация.';
+  }, afterBig + 9*CELLSTEP);
 
-  /* сразу открываем самую заполненную ячейку */
+  /* ── сразу открываем самую заполненную ячейку ── */
   var best = 1, bestLen = -1;
   for (var j = 1; j <= 9; j++){
     var len = (sq.cells[j] || '').length;
     if (len > bestLen){ bestLen = len; best = j; }
   }
-  selectCell(best);
-
-  outEl.classList.add('is-on');
-  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-  outEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  later(function(){ selectCell(best); }, afterBig + 9*CELLSTEP + 90);
 }
 
 document.getElementById('f-go').addEventListener('click', calculate);
